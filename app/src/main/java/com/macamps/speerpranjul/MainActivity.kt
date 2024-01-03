@@ -1,6 +1,7 @@
 package com.macamps.speerpranjul
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -29,9 +30,16 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
+import com.macamps.speerpranjul.network.Api
 import com.macamps.speerpranjul.ui.theme.Black
 import com.macamps.speerpranjul.ui.theme.SnowWhite
 import com.macamps.speerpranjul.ui.theme.SpeerPranjulTheme
+import io.ktor.client.call.body
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +54,11 @@ class MainActivity : ComponentActivity() {
                     Greeting()
                 }
             }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+           val result =  Api.get()
+            Log.e("TAG", "onCreate: ${result.body<String>()}" )
+
         }
     }
 }
