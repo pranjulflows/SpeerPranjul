@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,6 +8,7 @@ plugins {
     id("com.google.dagger.hilt.android")
 
 }
+val githubApiKey: String = gradleLocalProperties(rootDir).getProperty("GITHUB_API")
 
 android {
     namespace = "com.macamps.speerpranjul"
@@ -35,6 +38,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            buildConfigField("String", "githubApiKey", "\"$githubApiKey\"")
+
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -45,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -82,6 +90,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("io.ktor:ktor-client-logging-jvm:2.3.6")
     implementation("io.ktor:ktor-client-logging:2.3.6")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.6")
+
 
 
 }
