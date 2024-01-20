@@ -1,82 +1,47 @@
 package com.macamps.speerpranjul.model
 
+
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User (
-    val login: String,
-    val id: Long,
-
-    @SerialName("node_id")
-    val nodeID: String?,
-
+data class User(
     @SerialName("avatar_url")
-    val avatarURL: String,
-
-    @SerialName("gravatar_id")
-    val gravatarID: String,
-
-    val url: String,
-
-    @SerialName("html_url")
-    val htmlURL: String,
-
-    @SerialName("followers_url")
-    val followersURL: String,
-
-    @SerialName("following_url")
-    val followingURL: String,
-
-    @SerialName("gists_url")
-    val gistsURL: String,
-
-    @SerialName("starred_url")
-    val starredURL: String,
-
-    @SerialName("subscriptions_url")
-    val subscriptionsURL: String,
-
-    @SerialName("organizations_url")
-    val organizationsURL: String,
-
-    @SerialName("repos_url")
-    val reposURL: String,
-
+    val avatarUrl: String,
     @SerialName("events_url")
-    val eventsURL: String,
-
+    val eventsUrl: String,
+    @SerialName("followers_url")
+    val followersUrl: String,
+    @SerialName("following_url")
+    val followingUrl: String,
+    @SerialName("gists_url")
+    val gistsUrl: String,
+    @SerialName("gravatar_id")
+    val gravatarId: String,
+    @SerialName("html_url")
+    val htmlUrl: String,
+    @SerialName("id")
+    val id: Int,
+    @SerialName("login")
+    val login: String,
+    @SerialName("node_id")
+    val nodeId: String,
+    @SerialName("organizations_url")
+    val organizationsUrl: String,
     @SerialName("received_events_url")
-    val receivedEventsURL: String,
-
-    val type: String,
-
+    val receivedEventsUrl: String,
+    @SerialName("repos_url")
+    val reposUrl: String,
+    @SerialName("score")
+    val score: Double,
     @SerialName("site_admin")
     val siteAdmin: Boolean,
-
-    val name: String,
-    val company: String,
-    val blog: String,
-    val location: String? ,
-    val email: String,
-    val hireable: String? = null,
-    val bio: String,
-
-    @SerialName("twitter_username")
-    val twitterUsername: String? = null,
-
-    @SerialName("public_repos")
-    val publicRepos: Long?,
-
-    @SerialName("public_gists")
-    val publicGists: Long?,
-
-    val followers: Long,
-    val following: Long,
-
-    @SerialName("created_at")
-    val createdAt: String,
-
-    @SerialName("updated_at")
-    val updatedAt: String
+    @SerialName("starred_url")
+    val starredUrl: String,
+    @SerialName("subscriptions_url")
+    val subscriptionsUrl: String,
+    @SerialName("type")
+    val type: String,
+    @SerialName("url")
+    val url: String
 )

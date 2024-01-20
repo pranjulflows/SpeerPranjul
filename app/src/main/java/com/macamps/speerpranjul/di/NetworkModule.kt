@@ -9,19 +9,9 @@ import io.ktor.client.engine.okhttp.OkHttp
 import java.time.Duration
 import javax.inject.Singleton
 
-
+// TODO: hilt impl
 object NetworkModule {
 
-    fun ktorClient(): HttpClient = HttpClient(OkHttp) {
-//    install(Logging)
-        engine {
-            config {
-                readTimeout(Duration.ofMinutes(5))
-                connectTimeout(Duration.ofMinutes(5))
-            }
-            //   addInterceptor(HeaderInterceptor())
+//TODO: make httpClient singleton
 
-        }
-
-    }
 }
