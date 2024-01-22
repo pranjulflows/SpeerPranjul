@@ -30,9 +30,9 @@ import com.macamps.speerpranjul.ui.theme.SnowWhite
 import com.macamps.speerpranjul.utils.useDebounce
 
 @Composable
-fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: String = "Search") {
-
+fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: String = "Search",) {
     var searchText by remember { mutableStateOf("") }
+
     searchText.useDebounce { onSearch(it) }
     Row(
         modifier = Modifier.fillMaxWidth(),

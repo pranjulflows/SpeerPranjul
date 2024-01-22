@@ -23,10 +23,10 @@ import com.macamps.speerpranjul.model.User
 import com.macamps.speerpranjul.ui.theme.RustyWhite
 
 @Composable
-fun ProfileTile(profile: User?) {
+fun ProfileTile(profile: User?,modifier: Modifier=Modifier) {
     val localImagePainterUrl = remember { mutableStateOf(profile?.avatarUrl) }
 
-    Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
+    Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).then(modifier)) {
         Row {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(localImagePainterUrl.value)
