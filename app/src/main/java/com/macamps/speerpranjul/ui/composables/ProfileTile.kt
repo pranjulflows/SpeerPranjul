@@ -29,10 +29,8 @@ fun ProfileTile(profile: User?) {
     Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
         Row {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(localImagePainterUrl.value)
-                    .crossfade(true)
-                    .build(),
+                model = ImageRequest.Builder(LocalContext.current).data(localImagePainterUrl.value)
+                    .crossfade(true).build(),
                 contentDescription = "profile Image",
                 modifier = Modifier
                     .clip(CircleShape)
@@ -40,7 +38,7 @@ fun ProfileTile(profile: User?) {
                 placeholder = painterResource(id = R.drawable.github_placeholder),
             )
             Column(modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)) {
-                Text(text =profile?.login?:"", style = TextStyle(color = RustyWhite))
+                Text(text = profile?.login ?: "", style = TextStyle(color = RustyWhite))
             }
         }
     }
