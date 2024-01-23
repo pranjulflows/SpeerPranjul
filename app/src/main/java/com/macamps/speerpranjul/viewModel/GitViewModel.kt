@@ -1,6 +1,7 @@
 package com.macamps.speerpranjul.viewModel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.macamps.speerpranjul.model.GithubUserDetails
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GitViewModel @Inject constructor() : ViewModel() {
+class GitViewModel @Inject internal constructor() : ViewModel() {
+
     private val githubUserRepository = GithubUserRepository()
     private val _isLoading = MutableStateFlow(false)
     private val _apiErrorResponse = MutableStateFlow<String?>(null)

@@ -7,12 +7,13 @@ import coil.ImageLoaderFactory
 import com.macamps.speerpranjul.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class SpeerTestApp : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()
-        if(BuildConfig.DEBUG)
-            StrictMode.enableDefaults()
+//        if(BuildConfig.DEBUG)
+//            StrictMode.enableDefaults()
     }
     override fun newImageLoader(): ImageLoader =
         ImageLoader.Builder(this)

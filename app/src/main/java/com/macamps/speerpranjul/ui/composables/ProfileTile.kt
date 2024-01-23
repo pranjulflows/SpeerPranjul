@@ -21,16 +21,19 @@ import coil.request.ImageRequest
 import com.macamps.speerpranjul.R
 import com.macamps.speerpranjul.model.User
 import com.macamps.speerpranjul.ui.theme.RustyWhite
+import io.ktor.util.date.getTimeMillis
 
 @Composable
-fun ProfileTile(profile: User?,modifier: Modifier=Modifier) {
-    val localImagePainterUrl = remember { mutableStateOf(profile?.avatarUrl) }
-
-    Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp).then(modifier)) {
+fun ProfileTile(profile: User?, modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .padding(vertical = 10.dp, horizontal = 10.dp)
+            .then(modifier)
+    ) {
         Row {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(localImagePainterUrl.value)
-                    .crossfade(true).build(),
+                model = ImageRequest.Builder(LocalContext.current).data(profile?.avatarUrl)
+                    .diskCacheKey("${profile?.avatarUrl}").crossfade(true).build(),
                 contentDescription = "profile Image",
                 modifier = Modifier
                     .clip(CircleShape)
