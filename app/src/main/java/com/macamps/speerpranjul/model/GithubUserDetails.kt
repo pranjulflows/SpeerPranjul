@@ -7,8 +7,8 @@ data class GithubUserDetails(
     val avatarUrl: String?,
     @SerialName("events_url")
     val eventsUrl: String?,
-    var followersCount: Long?=0,
-    var followingCount: Long?=0,
+    var followersCount: Long=0,
+    var followingCount: Long=0,
     @SerialName("gists_url")
     val gistsUrl: String?,
     @SerialName("gravatar_id")

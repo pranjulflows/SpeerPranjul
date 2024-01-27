@@ -33,7 +33,7 @@ data class User(
     @SerialName("repos_url")
     val reposUrl: String,
     @SerialName("score")
-    val score: Double,
+    val score: Double?=null,
     @SerialName("site_admin")
     val siteAdmin: Boolean,
     @SerialName("starred_url")

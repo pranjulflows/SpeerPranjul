@@ -24,6 +24,7 @@ class GitViewModel @Inject internal constructor() : ViewModel() {
 
     private val githubUserRepository = GithubUserRepository()
     private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
     private val _apiErrorResponse = MutableStateFlow<String?>(null)
     private val apiErrorResponse = _apiErrorResponse.asStateFlow()
     private var _githubUsersList = MutableStateFlow<SearchResponse?>(null)
@@ -43,17 +44,42 @@ class GitViewModel @Inject internal constructor() : ViewModel() {
 
             }.collect { response ->
                 when (response) {
-                    is Resource.Loading -> _isLoading.update { false }
+                    is Resource.Loading -> _isLoading.update { true }
                     is Resource.Error -> _apiErrorResponse.update { response.message }
                     is Resource.Success -> _githubUsersList.update { response.data }
                 }
+                _isLoading.update { false }
+
             }
 
         }
 
     }
 
-    fun getUserDetails(user: User) {
+    fun getUserWithLoginId(loginId: String) {
+        viewModelScope.launch {
+            githubUserRepository.getUserByLoginId(loginId).onStart {
+                _isLoading.update { true }
+
+            }.catch {
+                Log.e("TAG", "getUserWithLoginId: ${it.localizedMessage}")
+
+            }.collect { response ->
+                when (response) {
+                    is Resource.Loading -> _isLoading.update { true }
+                    is Resource.Error -> _apiErrorResponse.update { response.message }
+                    is Resource.Success -> {
+                        response.data?.let { getUserDetails(it) }
+                    }
+                }
+                _isLoading.update { false }
+
+            }
+
+        }
+    }
+
+    private fun getUserDetails(user: User) {
         viewModelScope.launch {
             githubUserRepository.observerUserDetails(user).onStart {
                 _isLoading.update { true }
@@ -61,12 +87,14 @@ class GitViewModel @Inject internal constructor() : ViewModel() {
             }.catch {
                 Log.e("TAG", "getNewsList: ${it.localizedMessage}")
 
-            }.collect {response->
+            }.collect { response ->
                 when (response) {
-                    is Resource.Loading -> _isLoading.update { false }
+                    is Resource.Loading -> _isLoading.update { true }
                     is Resource.Error -> _apiErrorResponse.update { response.message }
                     is Resource.Success -> _githubUserDetails.update { response.data }
                 }
+                _isLoading.update { false }
+
             }
 
         }
