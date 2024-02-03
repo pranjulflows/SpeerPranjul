@@ -64,6 +64,11 @@ object Api {
     suspend fun getUserBySearchApi(url: String, search: String = "") = ktorClient().get {
         url("$url?q=$search")
     }
+
+    suspend fun getUserByLoginId(loginId: String) = ktorClient().get {
+        url("$userDetails/$loginId")
+    }
+
     suspend fun getApiByUrl(url: String) = ktorClient().get {
         url(url)
     }
@@ -72,5 +77,6 @@ object Api {
 
 const val baseUrl = "https://api.github.com/"
 const val searchUserUrl = "${baseUrl}search/users"
-const val currentUserUrl = "${baseUrl}/user"
-const val userFollowingUrl = "${baseUrl}/following/"
+const val currentUserUrl = "${baseUrl}user"
+const val userDetails = "${baseUrl}users"
+const val userFollowingUrl = "${baseUrl}users/"

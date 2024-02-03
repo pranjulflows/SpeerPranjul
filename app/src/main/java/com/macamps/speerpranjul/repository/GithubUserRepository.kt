@@ -1,22 +1,26 @@
 package com.macamps.speerpranjul.repository
 
+import android.util.Log
 import com.macamps.speerpranjul.model.CurrentUser
 import com.macamps.speerpranjul.model.GithubUserDetails
 import com.macamps.speerpranjul.model.SearchResponse
 import com.macamps.speerpranjul.model.User
 import com.macamps.speerpranjul.model.UserFollowers
+import com.macamps.speerpranjul.network.baseUrl
+import com.macamps.speerpranjul.network.userFollowingUrl
 import com.macamps.speerpranjul.utils.Resource
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class GithubUserRepository : GithubRepoMapper {
     override suspend fun getUsersBySearch(searchQuery: String): Flow<Resource<SearchResponse>> {
-
         return flow {
             val result = GithubDataSourceImpl.searchGithubUser(searchQuery = searchQuery)
             when (result.status) {
@@ -57,17 +61,22 @@ class GithubUserRepository : GithubRepoMapper {
             }
         }.flowOn(Dispatchers.IO)
 
+        Log.e("TAG", "observerUserDetails: followers $followerCount")
         val followingCount = flow<Int?> {
-            val result = GithubDataSourceImpl.githubUserFollower(user.followingUrl)
+            val result =
+                GithubDataSourceImpl.githubUserFollower("$userFollowingUrl${user.login}/following")
             when (result.status) {
                 HttpStatusCode.OK -> emit(result.body<List<UserFollowers>?>()?.size ?: 0)
+                HttpStatusCode.NotFound -> {
+                    Log.e("TAG", "observerUserDetails: Not Found ${result.body<String>()}")
+                }
+
                 else -> {
                     throw Exception("Something Went Wrong! http response code: ${result.status}")
                 }
             }
-            GithubDataSourceImpl.githubUserFollower(user.followingUrl)
-                .body<List<UserFollowers>?>()?.size ?: 0
         }.flowOn(Dispatchers.IO)
+
         val githubUserDetails = GithubUserDetails(
             avatarUrl = user.avatarUrl,
             eventsUrl = user.eventsUrl,
@@ -83,25 +92,104 @@ class GithubUserRepository : GithubRepoMapper {
             score = user.score,
             siteAdmin = user.siteAdmin,
             starredUrl = user.starredUrl,
-            subscriptionsUrl = user.subscriptionsUrl, type = user.type,
+            subscriptionsUrl = user.subscriptionsUrl,
+            type = user.type,
             url = user.url
         )
-
         followerCount.combine(followingCount) { follows, following ->
-            githubUserDetails.followersCount = follows?.toLong()
-            githubUserDetails.followingCount = following?.toLong()
-        }
+            Log.e("TAG", "observerUserDetails: follows $follows following $following")
+            githubUserDetails.followersCount = (follows ?: 0).toLong()
+
+            githubUserDetails.followingCount = (following ?: 0).toLong()
+        }.collect()
         return flow {
             emit(Resource.Success(githubUserDetails))
         }
     }
 
-    override suspend fun getUserFollowers(): Flow<Resource<List<UserFollowers>>> =
-        flow<Resource<List<UserFollowers>>> {
+    override suspend fun getUserByLoginId(loginId: String): Flow<Resource<User>> {
+        return flow {
+            val result = GithubDataSourceImpl.getUserWithLoginId(loginId)
+
+            when (result.status) {
+                HttpStatusCode.OK -> emit(Resource.Success(result.body<User>()))
+                HttpStatusCode.BadRequest -> emit(
+                    Resource.Error(
+                        "Bad Request", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.Unauthorized -> emit(
+                    Resource.Error(
+                        "Unauthorized", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.InternalServerError -> emit(
+                    Resource.Error(
+                        "500:Internal Server Error", data = result.body()
+                    )
+                )
+            }
 
         }.flowOn(Dispatchers.IO)
-
-    override suspend fun getUserFollowing(): Flow<Resource<List<UserFollowers>>> {
-        TODO("Not yet implemented")
     }
+
+    override suspend fun getUserFollowing(loginId: String): Flow<Resource<List<User>>> {
+
+        return flow {
+            val result =
+                GithubDataSourceImpl.githubUserFollower("https://api.github.com/users/$loginId/following")
+            when (result.status) {
+                HttpStatusCode.OK -> emit(Resource.Success(result.body<List<User>>()))
+                HttpStatusCode.BadRequest -> emit(
+                    Resource.Error(
+                        "Bad Request", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.Unauthorized -> emit(
+                    Resource.Error(
+                        "Unauthorized", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.InternalServerError -> emit(
+                    Resource.Error(
+                        "500:Internal Server Error", data = result.body()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getUserFollowers(loginId: String): Flow<Resource<List<User>>> {
+
+        return flow {
+            val result =
+                GithubDataSourceImpl.githubUserFollower("https://api.github.com/users/$loginId/followers")
+            when (result.status) {
+                HttpStatusCode.OK -> emit(Resource.Success(result.body<List<User>>()))
+                HttpStatusCode.BadRequest -> emit(
+                    Resource.Error(
+                        "Bad Request", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.Unauthorized -> emit(
+                    Resource.Error(
+                        "Unauthorized", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.InternalServerError -> emit(
+                    Resource.Error(
+                        "500:Internal Server Error", data = result.body()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+
 }

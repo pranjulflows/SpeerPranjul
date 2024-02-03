@@ -15,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +32,12 @@ import com.macamps.speerpranjul.ui.theme.SnowWhite
 import com.macamps.speerpranjul.utils.useDebounce
 
 @Composable
-fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: String = "Search") {
+fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: String = "Search",) {
+    var searchText by rememberSaveable { mutableStateOf("") }
 
-    var searchText by remember { mutableStateOf("") }
-    searchText.useDebounce { onSearch(it) }
+
+        searchText.useDebounce { onSearch(it) }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -42,7 +46,7 @@ fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: S
         Box(
 
             modifier = Modifier.padding(
-                start = 16.dp, top = 20.dp, bottom = 20.dp, end = 0.dp
+                start = 16.dp, top = 20.dp, bottom = 20.dp, end = 16.dp
             )
 
         ) {
@@ -52,13 +56,15 @@ fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: S
                     searchText = it
                 },
                 modifier = Modifier
-                    .fillMaxWidth(.85F)
+                    .fillMaxWidth(1F)
                     .clip(CircleShape),
                 placeholder = {
                     Text(text = hint)
                 },
 
                 colors = TextFieldDefaults.colors(
+                    focusedTextColor = BlackMinimal,
+                    unfocusedTextColor = RustyWhite,
                     unfocusedPlaceholderColor = RustyWhite,
                     focusedPlaceholderColor = BlackMinimal,
                     focusedContainerColor = SnowWhite,
@@ -74,16 +80,16 @@ fun SearchBar(modifier: Modifier = Modifier, onSearch: (String) -> Unit, hint: S
 
                 )
         }
-        IconButton(
-            onClick = { }, modifier = Modifier.padding(end = 5.dp)
-        ) {
-            Icon(
-                tint = SnowWhite,
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search Button",
-                modifier = Modifier.size(40.dp)
-            )
-        }
+//        IconButton(
+//            onClick = { }, modifier = Modifier.padding(end = 5.dp)
+//        ) {
+//            Icon(
+//                tint = SnowWhite,
+//                imageVector = Icons.Filled.Search,
+//                contentDescription = "Search Button",
+//                modifier = Modifier.size(40.dp)
+//            )
+//        }
 
     }
 }

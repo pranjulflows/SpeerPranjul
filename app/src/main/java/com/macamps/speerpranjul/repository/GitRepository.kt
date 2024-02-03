@@ -14,6 +14,7 @@ interface GithubRepoMapper {
     suspend fun getUsersBySearch(searchQuery: String): Flow<Resource<SearchResponse>>
     suspend fun getLoggedInUser(): Flow<Resource<CurrentUser>>
     suspend fun observerUserDetails(user: User): Flow<Resource<GithubUserDetails>>
-    suspend fun getUserFollowers(): Flow<Resource<List<UserFollowers>>>
-    suspend fun getUserFollowing(): Flow<Resource<List<UserFollowers>>>
+    suspend fun getUserByLoginId(loginId: String): Flow<Resource<User>>
+    suspend fun getUserFollowing(loginId: String): Flow<Resource<List<User>>>
+    suspend fun getUserFollowers(loginId: String): Flow<Resource<List<User>>>
 }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun <T> T.useDebounce(
-    delayMillis: Long = 300L,
+    delayMillis: Long = 500L,
     // 1. couroutine scope
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     onChange: (T) -> Unit
