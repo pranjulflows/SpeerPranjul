@@ -38,10 +38,7 @@ import com.macamps.speerpranjul.viewModel.GitViewModel
 fun ProfileScreen(navHostController: NavHostController, userId: String? = "userId") {
     val viewModel = hiltViewModel<GitViewModel>()
 
-    LaunchedEffect(key1 = userId) {
-        userId?.let { viewModel.getUserWithLoginId(it) }
-
-    }
+    LaunchedEffect(key1 = userId) { userId?.let { viewModel.getUserWithLoginId(it) } }
     val userDetails = viewModel.githubUserDetails.collectAsState()
     Log.e("TAG", "ProfileScreen: $userId ")
     val profile = userDetails.value
@@ -73,7 +70,7 @@ fun ProfileScreen(navHostController: NavHostController, userId: String? = "userI
             FollowerFollowingTile(followersCount = profile?.followersCount ?: 0,
                 followingCount = profile?.followingCount ?: 0,
                 onFollowerClick = {
-                    navHostController.navigate("/FollowerFollowingScreen/${profile?.login}/Follower")
+                    navHostController.navigate("/FollowerFollowingScreen/${profile?.login}/Followers")
 
                 },
                 onFollowingClick = {

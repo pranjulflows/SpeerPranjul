@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.macamps.speerpranjul.model.GithubUserDetails
 import com.macamps.speerpranjul.model.SearchResponse
 import com.macamps.speerpranjul.model.User
+import com.macamps.speerpranjul.model.UserFollowers
 import com.macamps.speerpranjul.repository.GithubUserRepository
 import com.macamps.speerpranjul.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,9 +31,49 @@ class GitViewModel @Inject internal constructor() : ViewModel() {
     private val apiErrorResponse = _apiErrorResponse.asStateFlow()
     private var _githubUsersList = MutableStateFlow<SearchResponse?>(null)
     private var _githubUserDetails = MutableStateFlow<GithubUserDetails?>(null)
+    private var _followerFollowingUsers = MutableStateFlow<List<User>?>(null)
+    var followerFollowingUsers = _followerFollowingUsers.asStateFlow()
     val githubUsersList = _githubUsersList.asStateFlow()
     val githubUserDetails = _githubUserDetails.asStateFlow()
 
+    fun getUsersFollowerFollowers(loginId: String,type:String) {
+        viewModelScope.launch {
+            when(type){
+                "following"->{
+                    githubUserRepository.getUserFollowing(loginId).onStart {
+                        _isLoading.update { true }
+                    }.catch {
+                        _isLoading.update { false }
+
+                    }.collect { response ->
+                        when (response) {
+                            is Resource.Loading -> _isLoading.update { true }
+                            is Resource.Error -> _apiErrorResponse.update { response.message }
+                            is Resource.Success -> _followerFollowingUsers.update { response.data }
+                        }
+
+                    }
+                }
+                else->{
+                    githubUserRepository.getUserFollowers(loginId).onStart {
+                        _isLoading.update { true }
+                    }.catch {
+                        _isLoading.update { false }
+
+                    }.collect { response ->
+                        when (response) {
+                            is Resource.Loading -> _isLoading.update { true }
+                            is Resource.Error -> _apiErrorResponse.update { response.message }
+                            is Resource.Success -> _followerFollowingUsers.update { response.data }
+                        }
+                    }
+                }
+
+            }
+
+
+        }
+    }
 
     fun searchGithubUsers(search: String) {
         viewModelScope.launch {
@@ -68,9 +110,8 @@ class GitViewModel @Inject internal constructor() : ViewModel() {
                 when (response) {
                     is Resource.Loading -> _isLoading.update { true }
                     is Resource.Error -> _apiErrorResponse.update { response.message }
-                    is Resource.Success -> {
-                        response.data?.let { getUserDetails(it) }
-                    }
+                    is Resource.Success -> response.data?.let { getUserDetails(it) }
+
                 }
                 _isLoading.update { false }
 

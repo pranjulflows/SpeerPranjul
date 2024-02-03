@@ -135,5 +135,61 @@ class GithubUserRepository : GithubRepoMapper {
         }.flowOn(Dispatchers.IO)
     }
 
+    override suspend fun getUserFollowing(loginId: String): Flow<Resource<List<User>>> {
+
+        return flow {
+            val result =
+                GithubDataSourceImpl.githubUserFollower("https://api.github.com/users/$loginId/following")
+            when (result.status) {
+                HttpStatusCode.OK -> emit(Resource.Success(result.body<List<User>>()))
+                HttpStatusCode.BadRequest -> emit(
+                    Resource.Error(
+                        "Bad Request", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.Unauthorized -> emit(
+                    Resource.Error(
+                        "Unauthorized", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.InternalServerError -> emit(
+                    Resource.Error(
+                        "500:Internal Server Error", data = result.body()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getUserFollowers(loginId: String): Flow<Resource<List<User>>> {
+
+        return flow {
+            val result =
+                GithubDataSourceImpl.githubUserFollower("https://api.github.com/users/$loginId/followers")
+            when (result.status) {
+                HttpStatusCode.OK -> emit(Resource.Success(result.body<List<User>>()))
+                HttpStatusCode.BadRequest -> emit(
+                    Resource.Error(
+                        "Bad Request", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.Unauthorized -> emit(
+                    Resource.Error(
+                        "Unauthorized", data = result.body()
+                    )
+                )
+
+                HttpStatusCode.InternalServerError -> emit(
+                    Resource.Error(
+                        "500:Internal Server Error", data = result.body()
+                    )
+                )
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
 
 }
