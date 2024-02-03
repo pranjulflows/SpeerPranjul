@@ -64,9 +64,13 @@ object Api {
     suspend fun getUserBySearchApi(url: String, search: String = "") = ktorClient().get {
         url("$url?q=$search")
     }
+    suspend fun getApiByUrl(url: String) = ktorClient().get {
+        url(url)
+    }
 
 }
 
 const val baseUrl = "https://api.github.com/"
 const val searchUserUrl = "${baseUrl}search/users"
 const val currentUserUrl = "${baseUrl}/user"
+const val userFollowingUrl = "${baseUrl}/following/"
