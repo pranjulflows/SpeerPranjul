@@ -52,6 +52,7 @@ import com.macamps.speerpranjul.utils.noRippleClickable
 import com.macamps.speerpranjul.viewModel.GitViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     lateinit var navHostController: NavHostController
