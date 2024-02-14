@@ -33,7 +33,7 @@ fun UserFollowerFollowing(
     gitViewModel: GitViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = Unit) {
-        gitViewModel.getUsersFollowerFollowers(userId ?: "Github User","$type")
+        gitViewModel.getUsersFollowerFollowers(userId ?: "Github User","${type?.lowercase()}")
     }
 
 
